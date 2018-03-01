@@ -25,6 +25,12 @@ namespace Eventos.IO.Site.Controllers
             return View(_eventoAppService.ObterTodos());
         }
 
+        [Authorize]
+        public IActionResult MeusEventos()
+        {
+            return View(_eventoAppService.ObterEventoPorOrganizador(OrganizadorId));
+        }
+
         // GET: Eventos/Details/5
         public IActionResult Details(Guid? id)
         {
@@ -76,9 +82,16 @@ namespace Eventos.IO.Site.Controllers
             }
 
             var eventoViewModel = _eventoAppService.ObterPorId(id.Value);
+
             if (eventoViewModel == null)
             {
                 return NotFound();
+            }
+
+           
+            if (!ValidarAutoridadeEvento(eventoViewModel))
+            {
+                return RedirectToAction("MeusEventos", _eventoAppService.ObterEventoPorOrganizador(OrganizadorId));
             }
 
             return View(eventoViewModel);
@@ -90,6 +103,12 @@ namespace Eventos.IO.Site.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(EventoViewModel eventoViewModel)
         {
+
+            if (!ValidarAutoridadeEvento(eventoViewModel))
+            {
+                return RedirectToAction("MeusEventos", _eventoAppService.ObterEventoPorOrganizador(OrganizadorId));
+            }
+
             if (!ModelState.IsValid) return View(eventoViewModel);
 
             eventoViewModel.OrganizadorId = OrganizadorId;
@@ -105,7 +124,7 @@ namespace Eventos.IO.Site.Controllers
             {
                 eventoViewModel = _eventoAppService.ObterPorId(eventoViewModel.Id);
             }
-                
+
 
             return View(eventoViewModel);
         }
@@ -123,6 +142,12 @@ namespace Eventos.IO.Site.Controllers
             if (eventoViewModel == null)
             {
                 return NotFound();
+
+            }
+
+            if (!ValidarAutoridadeEvento(eventoViewModel))
+            {
+                return RedirectToAction("MeusEventos", _eventoAppService.ObterEventoPorOrganizador(OrganizadorId));
             }
 
             return View(eventoViewModel);
@@ -133,6 +158,10 @@ namespace Eventos.IO.Site.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(Guid id)
         {
+            if (!ValidarAutoridadeEvento(_eventoAppService.ObterPorId(id)))
+            {
+                return RedirectToAction("MeusEventos", _eventoAppService.ObterEventoPorOrganizador(OrganizadorId));
+            }
 
             _eventoAppService.Excluir(id);
 
@@ -199,6 +228,11 @@ namespace Eventos.IO.Site.Controllers
         public IActionResult ObterEndereco(Guid id)
         {
             return PartialView("_DetalhesEndereco", _eventoAppService.ObterPorId(id));
+        }
+
+        private bool ValidarAutoridadeEvento(EventoViewModel eventoViewModel)
+        {
+            return eventoViewModel.OrganizadorId == OrganizadorId;
         }
     }
 }

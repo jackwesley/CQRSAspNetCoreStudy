@@ -155,7 +155,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Registrar" class="btn btn-success" />
+                <input type="submit" id="btSubmit" value="Registrar" class="btn btn-success" />
                 <a asp-action="Index" class="btn btn-info">Voltar para a lista</a>
             </div>
         </div>
@@ -182,9 +182,28 @@
         {
             var notificacao = ViewBag.RetornoPost.ToString().Split(',');
 
-            <script>    
-                Command: toastr["@notificacao[0]"]("@notificacao[1]");
+            <script>
+                toastr["@notificacao[0]"]("@notificacao[1]");
             </script>
+
+            if (@notificacao[0] == "success")
+            {
+                <script>
+                    toastr.options.onHidden = function () {
+                        window.location = "http://localhost:6246/eventos/meuseventos"
+                    };
+
+                    toastr.options.onClick = function () {
+                        window.location = "http://localhost:6246/eventos/meuseventos"
+                    };
+
+                    toastr.options.onCloseClick = function () {
+                        window.location = "http://localhost:6246/eventos/meuseventos"
+                    };
+
+                    $("#btSubmit").prop("disabled", true);
+                </script>
+            }
         }
     }
 }

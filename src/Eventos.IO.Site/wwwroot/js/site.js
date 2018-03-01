@@ -26,6 +26,7 @@
         "hideMethod": "fadeOut"
     }
 
+
     $('#DataInicio').datepicker({
         format: "dd/mm/yyyy",
         startDate: "tomorrow",

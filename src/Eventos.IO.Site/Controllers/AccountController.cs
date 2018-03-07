@@ -15,6 +15,7 @@ using Eventos.IO.Domain.Interfaces;
 using Eventos.IO.Infra.CrossCutting.Identity.Models;
 using Eventos.IO.Infra.CrossCutting.Identity.Services;
 using Eventos.IO.Infra.CrossCutting.Identity.Models.AccountViewModels;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Eventos.IO.Site.Controllers
 {
@@ -121,6 +122,10 @@ namespace Eventos.IO.Site.Controllers
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+
+                user.Claims.Add(new IdentityUserClaim<string> { ClaimType = "Eventos", ClaimValue = "Ler" });
+                user.Claims.Add(new IdentityUserClaim<string> { ClaimType = "Eventos", ClaimValue = "Gravar" });
+
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -159,7 +164,7 @@ namespace Eventos.IO.Site.Controllers
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation(4, "User logged out.");
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return RedirectToAction(nameof(EventosController.Index), "Eventos");
         }
 
         //
@@ -466,7 +471,7 @@ namespace Eventos.IO.Site.Controllers
         [HttpGet]
         public IActionResult AccessDenied()
         {
-            return View();
+            return RedirectToAction("Erros", "Erro", new { id = 403 });
         }
 
         #region Helpers
@@ -487,7 +492,7 @@ namespace Eventos.IO.Site.Controllers
             }
             else
             {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction(nameof(EventosController.Index), "Eventos");
             }
         }
 

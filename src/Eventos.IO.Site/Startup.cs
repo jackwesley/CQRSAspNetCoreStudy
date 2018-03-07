@@ -15,6 +15,8 @@ using Eventos.IO.Domain.Interfaces;
 using Eventos.IO.Infra.CrossCutting.Identity.Data;
 using Eventos.IO.Infra.CrossCutting.Identity.Models;
 using Eventos.IO.Infra.CrossCutting.Identity.Services;
+using Eventos.IO.Infra.CrossCutting.AspNetFilters;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Eventos.IO.Site
 {
@@ -71,12 +73,19 @@ namespace Eventos.IO.Site
                 }));
             });
 
-            services.AddMvc();
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("PodeLerEventos", policy => policy.RequireClaim("Eventos", "Ler"));
+                options.AddPolicy("PodeGravar", policy => policy.RequireClaim("Eventos", "Gravar"));
+            });
+
+            services.AddMvc(options =>
+            {
+                options.Filters.Add(new ServiceFilterAttribute(typeof(GlobalExceptionHandlingFilter)));
+            }
+            );
+
             services.AddAutoMapper();
-
-        
-          
-
             RegisterServices(services);
         }
 
@@ -93,11 +102,11 @@ namespace Eventos.IO.Site
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
-                app.UseBrowserLink();
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/erro-de-aplicacao");
+                app.UseStatusCodePagesWithReExecute("/erro-de-aplicacao/{0}");
             }
 
             //suporte a cultura ptBR pode ser adicionado várias cultudas ao vetor abaixo
@@ -117,7 +126,6 @@ namespace Eventos.IO.Site
             });
 
             app.UseStaticFiles();
-
             app.UseIdentity();
 
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715

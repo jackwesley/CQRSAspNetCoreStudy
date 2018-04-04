@@ -7,16 +7,18 @@ namespace Eventos.IO.Domain.Eventos.Commands
     public class RegistrarEventoCommand : BaseEventoCommand
     {
 
+        public IncluirEnderecoEventoCommand Endereco { get; protected set; }
+
         public RegistrarEventoCommand(
             string nome,
             string descricaoCurta,
             string descricaoLonga,
             DateTime dataInicio,
-            DateTime dataFim, 
-            bool gratuito,                 
-            decimal valor, 
-            bool online, 
-            string nomeEmpresa, 
+            DateTime dataFim,
+            bool gratuito,
+            decimal valor,
+            bool online,
+            string nomeEmpresa,
             Guid orgaginzadorId,
             Guid categoriaId,
             IncluirEnderecoEventoCommand endereco
@@ -37,6 +39,6 @@ namespace Eventos.IO.Domain.Eventos.Commands
             Endereco = endereco;
         }
 
-        public IncluirEnderecoEventoCommand Endereco { get; private set; }
+
     }
 }

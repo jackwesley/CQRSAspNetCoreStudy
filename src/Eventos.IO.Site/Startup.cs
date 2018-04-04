@@ -11,12 +11,11 @@ using Eventos.IO.Infra.CrossCuting.IoC;
 using AutoMapper;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
-using Eventos.IO.Domain.Interfaces;
 using Eventos.IO.Infra.CrossCutting.Identity.Data;
 using Eventos.IO.Infra.CrossCutting.Identity.Models;
-using Eventos.IO.Infra.CrossCutting.Identity.Services;
 using Eventos.IO.Infra.CrossCutting.AspNetFilters;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace Eventos.IO.Site
 {
@@ -86,6 +85,7 @@ namespace Eventos.IO.Site
             );
 
             services.AddAutoMapper();
+
             RegisterServices(services);
         }
 
@@ -136,7 +136,7 @@ namespace Eventos.IO.Site
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
-
+            
 
             InMemoryBus.ContainerAccessor = () => accessor.HttpContext.RequestServices;
         }

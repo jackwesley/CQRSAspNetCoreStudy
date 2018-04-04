@@ -14,5 +14,7 @@ namespace Eventos.IO.Domain.Eventos.Repository
 
         void AtualizarEndereco(Endereco endereco);
 
+        IEnumerable<Categoria> ObterCategorias();
+
     }
 }

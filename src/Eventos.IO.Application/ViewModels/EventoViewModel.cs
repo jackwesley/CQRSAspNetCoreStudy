@@ -16,7 +16,7 @@ namespace Eventos.IO.Application.ViewModels
         [Key]
         public Guid Id { get; set; }
 
-        [Required(ErrorMessage = "O nome é requedido")]
+        [Required(ErrorMessage = "O nome é requerido")]
         [MinLength(2, ErrorMessage = "O tamanho mínimo é de {1}")]
         [MaxLength(150, ErrorMessage = "O tamanho máximo é de {1}")]
         [Display(Name = "Nome do evento")]

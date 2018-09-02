@@ -80,7 +80,13 @@ namespace Eventos.IO.Services.Api.Controllers
         [Authorize(Policy = "PodeGravar")]
         public IActionResult Put([FromBody] EventoViewModel eventoVielModel)
         {
-           _eventoAppService.Atualizar(eventoVielModel);
+
+            if (!ModelState.IsValid)
+            {
+                NotificarErroModelInvalida();
+                return Response();
+            }
+            _eventoAppService.Atualizar(eventoVielModel);
             return Response(eventoVielModel);
         }
 
